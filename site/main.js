@@ -53,24 +53,34 @@ const SITE_CONFIG = {
 
   const toggle = $("#menu-toggle");
   const nav = $("#main-nav");
+  const navOverlay = $("#nav-overlay");
   const setMenu = (open) => {
     nav.classList.toggle("open", open);
+    navOverlay.hidden = !open;
     toggle.setAttribute("aria-expanded", String(open));
+    toggle.setAttribute("aria-label", open ? "סגירת תפריט" : "פתיחת תפריט");
     document.body.style.overflow = open ? "hidden" : "";
   };
   toggle.addEventListener("click", () => setMenu(!nav.classList.contains("open")));
+  navOverlay.addEventListener("click", () => setMenu(false));
   $$("a", nav).forEach((a) => a.addEventListener("click", () => setMenu(false)));
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && nav.classList.contains("open")) {
+      setMenu(false);
+      toggle.focus();
+    }
+  });
 
   /* ---------- active nav link ---------- */
   const navLinks = $$(".main-nav a:not(.nav-cta-mobile)");
   const sections = navLinks
-    .map((a) => document.querySelector(a.getAttribute("href")))
+    .map((a) => (a.getAttribute("href") === "#top" ? hero : document.querySelector(a.getAttribute("href"))))
     .filter(Boolean);
   const spy = new IntersectionObserver(
     (entries) => {
       entries.forEach((e) => {
         if (!e.isIntersecting) return;
-        const id = "#" + e.target.id;
+        const id = e.target === hero ? "#top" : "#" + e.target.id;
         navLinks.forEach((a) => a.classList.toggle("active", a.getAttribute("href") === id));
       });
     },
@@ -124,7 +134,16 @@ const SITE_CONFIG = {
   $$("[data-close]", modal).forEach((el) => el.addEventListener("click", () => closeModal()));
   window.addEventListener("popstate", () => closeModal(true));
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && !modal.hidden) closeModal();
+    if (modal.hidden) return;
+    if (e.key === "Escape") closeModal();
+    if (e.key === "Tab") {
+      // keep keyboard focus inside the open modal
+      const focusables = $$("button, video, iframe, a[href]", modal);
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
   });
 
   $$(".g-item").forEach((btn) =>
@@ -157,6 +176,7 @@ const SITE_CONFIG = {
       } else {
         node = document.createElement("video");
         node.className = "vertical";
+        node.title = btn.dataset.title || "וידאו";
         node.src = src;
         if (btn.dataset.poster) node.poster = btn.dataset.poster;
         node.controls = true;
@@ -170,18 +190,40 @@ const SITE_CONFIG = {
   /* ---------- contact form ---------- */
   const form = $("#contact-form");
   const status = $("#form-status");
+  const sendPrimary = $("#send-primary");
+  const sendEmail = $("#send-email");
+  const instagramHandle = (SITE_CONFIG.social.instagram.match(/instagram\.com\/([^/?#]+)/) || [])[1];
+
+  // Until a WhatsApp number is set, the main button sends via Instagram DM.
+  if (!SITE_CONFIG.whatsapp) sendPrimary.textContent = "שליחה בהודעה באינסטגרם";
+  if (!SITE_CONFIG.email) sendEmail.hidden = true;
+
+  const copyText = (text) => {
+    // synchronous copy so it happens before a new tab steals focus
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.setAttribute("readonly", "");
+    ta.style.cssText = "position:fixed;opacity:0;top:0;left:0";
+    document.body.appendChild(ta);
+    ta.select();
+    let ok = false;
+    try { ok = document.execCommand("copy"); } catch (_) { ok = false; }
+    ta.remove();
+    if (!ok && navigator.clipboard) navigator.clipboard.writeText(text).then(() => {}, () => {});
+    return ok || !!navigator.clipboard;
+  };
 
   const collect = () => {
     const d = Object.fromEntries(new FormData(form).entries());
-    let ok = true;
-    ["name", "phone"].forEach((k) => {
-      const field = form.elements[k].closest(".field");
-      const bad = !String(d[k] || "").trim();
-      field.classList.toggle("invalid", bad);
-      if (bad) ok = false;
-    });
-    if (!ok) {
-      status.textContent = "נא למלא שם וטלפון כדי שנוכל לחזור אליכם.";
+    const nameBad = !String(d.name || "").trim();
+    const phoneBad = String(d.phone || "").replace(/\D/g, "").length < 9;
+    form.elements.name.closest(".field").classList.toggle("invalid", nameBad);
+    form.elements.phone.closest(".field").classList.toggle("invalid", phoneBad);
+    if (nameBad || phoneBad) {
+      status.textContent = nameBad
+        ? "נא למלא שם וטלפון כדי שנוכל לחזור אליכם."
+        : "נראה שמספר הטלפון חסר או קצר מדי.";
+      (nameBad ? form.elements.name : form.elements.phone).focus();
       return null;
     }
     const lines = [
@@ -201,21 +243,22 @@ const SITE_CONFIG = {
     e.preventDefault();
     const text = collect();
     if (!text) return;
-    if (!SITE_CONFIG.whatsapp) {
-      status.textContent = "מספר הוואטסאפ עוד לא הוגדר – אפשר לשלוח במייל.";
+    if (SITE_CONFIG.whatsapp) {
+      status.textContent = "פותחים וואטסאפ...";
+      window.open(`https://wa.me/${SITE_CONFIG.whatsapp}?text=${encodeURIComponent(text)}`, "_blank", "noopener");
       return;
     }
-    status.textContent = "פותחים וואטסאפ...";
-    window.open(`https://wa.me/${SITE_CONFIG.whatsapp}?text=${encodeURIComponent(text)}`, "_blank", "noopener");
+    // Fallback: Instagram DMs can't be prefilled, so copy the message first.
+    const copied = copyText(text);
+    status.textContent = copied
+      ? "ההודעה הועתקה ✔ – הדביקו אותה בצ'אט עם שמחה באינסטגרם שנפתח עכשיו."
+      : "פותחים את האינסטגרם של שמחה – כתבו לה שם את פרטי ההרצאה.";
+    window.open(instagramHandle ? `https://ig.me/m/${instagramHandle}` : SITE_CONFIG.social.instagram, "_blank", "noopener");
   });
 
-  $("#send-email").addEventListener("click", () => {
+  sendEmail.addEventListener("click", () => {
     const text = collect();
     if (!text) return;
-    if (!SITE_CONFIG.email) {
-      status.textContent = "כתובת המייל עוד לא הוגדרה – אפשר לפנות באינסטגרם ‎@simcha_lavii.";
-      return;
-    }
     status.textContent = "פותחים את תוכנת המייל...";
     const subject = encodeURIComponent("הזמנת הרצאה – שמחה לביא");
     window.location.href = `mailto:${SITE_CONFIG.email}?subject=${subject}&body=${encodeURIComponent(text)}`;

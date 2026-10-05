@@ -13,6 +13,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@700&family=Heebo:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231a0f17'/%3E%3Ctext x='32' y='45' font-family='Arial' font-weight='700' font-size='36' fill='%23ef3d88' text-anchor='middle'%3ESL%3C/text%3E%3C/svg%3E">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -41,7 +42,8 @@
       להזמנת הרצאה
     </a>
 
-    <button class="menu-toggle" id="menu-toggle" aria-label="פתיחת תפריט" aria-expanded="false" aria-controls="main-nav">
+    <div class="nav-overlay" id="nav-overlay" hidden></div>
+    <button type="button" class="menu-toggle" id="menu-toggle" aria-label="פתיחת תפריט" aria-expanded="false" aria-controls="main-nav">
       <span></span><span></span><span></span>
     </button>
   </div>
@@ -63,15 +65,15 @@
     <p class="hero-tagline">צמצום פערים בחברה הישראלית – <strong>זה תלוי בנו.</strong></p>
     <div class="hero-actions">
       <a href="#contact" class="btn btn-pink btn-lg">להזמנת הרצאה</a>
-      <a href="#teaser" class="btn btn-ghost btn-lg">
+      <button type="button" class="btn btn-ghost btn-lg" data-video="videos/teaser-podcast.mp4" data-poster="images/teaser-poster.jpg" data-title="טעימה מההרצאה">
         <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor" stroke="none"/></svg>
         טעימה מההרצאה
-      </a>
+      </button>
     </div>
-    <ul class="hero-facts" aria-label="בקצרה">
+    <ul class="hero-facts">
       <li><strong>קצינה לוחמת</strong><span>לשעבר</span></li>
       <li><strong>מעולם חרדי</strong><span>לכל העולמות</span></li>
-      <li><strong>29K+</strong><span>עוקבים באינסטגרם</span></li>
+      <li><strong><bdi dir="ltr">29K+</bdi></strong><span>עוקבים באינסטגרם</span></li>
     </ul>
   </div>
   <a href="#about" class="scroll-hint" aria-label="גלילה למטה">
@@ -90,7 +92,7 @@
       <p>קצינה לוחמת לשעבר, רקדנית על עמוד, יזמית, בעלת עסק, חובבת אנשים, מכורה למוזיקה ותנועה.
         מגיעה מעולם חרדי, וחיה היום את כל העולמות ביחד.</p>
       <p>אני מאמינה שאין תשובה אחת,<br>ואולי בכלל לא צריך לבחור.</p>
-      <ul class="tags" aria-label="תגיות">
+      <ul class="tags">
         <li>ספורטאית</li><li>עצמאית</li><li>מרצה</li><li>יוצרת תוכן</li>
       </ul>
       <p class="dream"><span>החלום?</span> לצמצם פערים בחברה הישראלית. וזה תלוי בנו.</p>
@@ -354,17 +356,17 @@
       <h2 class="section-title center">רגעים מהדרך</h2>
     </header>
     <div class="gallery-grid">
-      <button class="g-item wide" data-full="images/lecture-hall-wide.jpg"><img src="images/lecture-hall-wide.jpg" alt="הרצאה באולם מלא" loading="lazy"></button>
-      <button class="g-item tall" data-full="images/lecture-restorative-slide.jpg"><img src="images/lecture-restorative-slide.jpg" alt="שקף צדק מאחה בהרצאה" loading="lazy"></button>
-      <button class="g-item tall" data-full="images/haredi-hug.jpg"><img src="images/haredi-hug.jpg" alt="חיבוק עם אדם חרדי במדי קצינה" loading="lazy"></button>
-      <button class="g-item wide" data-full="images/combat-bw.jpg"><img src="images/combat-bw.jpg" alt="לוחמות ולוחמים בסוף מסע, צילום: מיטל קריספל" loading="lazy"></button>
-      <button class="g-item" data-full="images/helmet-vehicle.jpg"><img src="images/helmet-vehicle.jpg" alt="סלפי עם קסדה ברכב צבאי" loading="lazy"></button>
-      <button class="g-item" data-full="images/interview.jpg"><img src="images/interview.jpg" alt="ראיון מצולם במדים" loading="lazy"></button>
-      <button class="g-item tall" data-full="images/kotel-uniform.jpg"><img src="images/kotel-uniform.jpg" alt="ברחבת הכותל במדים" loading="lazy"></button>
-      <button class="g-item wide" data-full="images/hero-rescue-night.jpg"><img src="images/hero-rescue-night.jpg" alt="באימון חילוץ והצלה בלילה" loading="lazy"></button>
-      <button class="g-item" data-full="images/officer-selfie.jpg"><img src="images/officer-selfie.jpg" alt="סלפי עם חיילות וחיילים" loading="lazy"></button>
-      <button class="g-item tall" data-full="images/field-cap.jpg"><img src="images/field-cap.jpg" alt="בשטח עם כובע מצחייה" loading="lazy"></button>
-      <button class="g-item" data-full="images/story-restorative-justice.jpg"><img src="images/story-restorative-justice.jpg" alt="מפגש צדק מאחה" loading="lazy"></button>
+      <button type="button" class="g-item wide" data-full="images/lecture-hall-wide.jpg"><img src="images/lecture-hall-wide.jpg" alt="הרצאה באולם מלא" loading="lazy"></button>
+      <button type="button" class="g-item tall" data-full="images/lecture-restorative-slide.jpg"><img src="images/lecture-restorative-slide.jpg" alt="שקף צדק מאחה בהרצאה" loading="lazy"></button>
+      <button type="button" class="g-item tall" data-full="images/haredi-hug.jpg"><img src="images/haredi-hug.jpg" alt="חיבוק עם אדם חרדי במדי קצינה" loading="lazy"></button>
+      <button type="button" class="g-item wide" data-full="images/combat-bw.jpg"><img src="images/combat-bw.jpg" alt="לוחמות ולוחמים בסוף מסע, צילום: מיטל קריספל" loading="lazy"></button>
+      <button type="button" class="g-item" data-full="images/helmet-vehicle.jpg"><img src="images/helmet-vehicle.jpg" alt="סלפי עם קסדה ברכב צבאי" loading="lazy"></button>
+      <button type="button" class="g-item" data-full="images/interview.jpg"><img src="images/interview.jpg" alt="ראיון מצולם במדים" loading="lazy"></button>
+      <button type="button" class="g-item tall" data-full="images/kotel-uniform.jpg"><img src="images/kotel-uniform.jpg" alt="ברחבת הכותל במדים" loading="lazy"></button>
+      <button type="button" class="g-item wide" data-full="images/hero-rescue-night.jpg"><img src="images/hero-rescue-night.jpg" alt="באימון חילוץ והצלה בלילה" loading="lazy"></button>
+      <button type="button" class="g-item" data-full="images/officer-selfie.jpg"><img src="images/officer-selfie.jpg" alt="סלפי עם חיילות וחיילים" loading="lazy"></button>
+      <button type="button" class="g-item tall" data-full="images/field-cap.jpg"><img src="images/field-cap.jpg" alt="בשטח עם כובע מצחייה" loading="lazy"></button>
+      <button type="button" class="g-item" data-full="images/story-restorative-justice.jpg"><img src="images/story-restorative-justice.jpg" alt="מפגש צדק מאחה" loading="lazy"></button>
     </div>
     <p class="gallery-more">
       עוד רגעים, סרטונים ומחשבות – באינסטגרם
@@ -394,7 +396,7 @@
       </div>
       <div class="field">
         <label for="f-phone">טלפון *</label>
-        <input id="f-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required>
+        <input id="f-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" dir="ltr" required>
       </div>
       <div class="field">
         <label for="f-org">מוסד / ארגון</label>
@@ -423,7 +425,7 @@
         <textarea id="f-msg" name="message" rows="4"></textarea>
       </div>
       <div class="form-actions full">
-        <button type="submit" class="btn btn-pink btn-lg">שליחה בוואטסאפ</button>
+        <button type="submit" class="btn btn-pink btn-lg" id="send-primary">שליחה בוואטסאפ</button>
         <button type="button" class="btn btn-outline-light btn-lg" id="send-email">שליחה במייל</button>
       </div>
       <p class="form-status full" id="form-status" role="status" aria-live="polite"></p>
@@ -448,7 +450,8 @@
     <p class="footer-script">יחד יש לנו יותר <span aria-hidden="true">♡</span></p>
 
     <!-- Social links: set real URLs in main.js (SITE_CONFIG) -->
-    <ul class="socials" aria-label="רשתות חברתיות">
+    <nav aria-label="רשתות חברתיות">
+    <ul class="socials">
       <li><a data-social="instagram" href="https://www.instagram.com/simcha_lavii/" target="_blank" rel="noopener" aria-label="אינסטגרם">
         <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg></a></li>
       <li><a data-social="tiktok" href="#" target="_blank" rel="noopener" aria-label="טיקטוק">
@@ -458,6 +461,7 @@
       <li><a data-social="email" href="#contact" aria-label="דואר אלקטרוני">
         <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></a></li>
     </ul>
+    </nav>
 
     <p class="copyright">© <span id="year"></span> שמחה לביא · כל הזכויות שמורות · צילום קבוצתי: Meital Krispel</p>
   </div>
@@ -470,7 +474,7 @@
 <div class="modal" id="modal" hidden>
   <div class="modal-backdrop" data-close></div>
   <div class="modal-body" role="dialog" aria-modal="true" aria-label="תצוגה">
-    <button class="modal-close" data-close aria-label="סגירה">×</button>
+    <button type="button" class="modal-close" data-close aria-label="סגירה">×</button>
     <div class="modal-content" id="modal-content"></div>
   </div>
 </div>

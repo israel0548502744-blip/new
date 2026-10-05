@@ -22,6 +22,7 @@
 }
 
 *, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
 html { scroll-behavior: smooth; scroll-padding-top: 80px; }
 body {
   margin: 0;
@@ -95,7 +96,9 @@ p { margin: 0 0 1em; }
   transition: background .3s, box-shadow .3s, padding .3s;
   padding: 14px 0;
 }
-.site-header.scrolled { background: rgba(26, 15, 23, .92); backdrop-filter: blur(10px); box-shadow: 0 4px 20px rgba(0,0,0,.25); padding: 8px 0; }
+.site-header::before { content: ""; position: absolute; inset: 0; z-index: -1; opacity: 0; transition: opacity .3s; background: rgba(26, 15, 23, .92); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); box-shadow: 0 4px 20px rgba(0,0,0,.25); }
+.site-header.scrolled { padding: 8px 0; }
+.site-header.scrolled::before { opacity: 1; }
 .header-inner { display: flex; align-items: center; gap: 28px; }
 .logo { display: flex; flex-direction: column; align-items: center; text-decoration: none; color: #fff; line-height: 1; }
 .logo-en { font-weight: 300; letter-spacing: .28em; font-size: 1.05rem; direction: ltr; }
@@ -269,7 +272,7 @@ p { margin: 0 0 1em; }
 .g-item.tall { grid-row: span 2; }
 .g-item.wide { grid-column: span 2; }
 .gallery-more { text-align: center; margin-top: 28px; color: var(--muted); }
-.gallery-more a { color: var(--pink); font-weight: 700; text-decoration: none; direction: ltr; unicode-bidi: isolate; }
+.gallery-more a { color: var(--pink); font-weight: 700; text-decoration: none; direction: ltr; unicode-bidi: isolate; display: inline-block; padding: 10px 4px; }
 
 /* ---------- contact ---------- */
 .contact { background: radial-gradient(ellipse at 20% 0%, #4a1f3a 0%, var(--ink) 60%); color: #fff; padding: clamp(64px, 9vw, 110px) 0; }
@@ -359,8 +362,12 @@ p { margin: 0 0 1em; }
     position: fixed; inset: 0 0 0 auto; width: min(320px, 85vw);
     flex-direction: column; gap: 6px; padding: 90px 28px 28px;
     background: var(--ink); box-shadow: -10px 0 40px rgba(0,0,0,.4);
-    transform: translateX(100%); transition: transform .35s ease;
+    transform: translateX(100%); transition: transform .35s ease, visibility 0s linear .35s;
+    visibility: hidden; overflow-y: auto; z-index: 55;
   }
+  .main-nav.open { visibility: visible; transition: transform .35s ease, visibility 0s; }
+  .nav-overlay { position: fixed; inset: 0; z-index: 54; background: rgba(10, 5, 9, .55); }
+  .nav-overlay[hidden] { display: none; }
   [dir="rtl"] .main-nav { inset: 0 0 0 auto; }
   .main-nav.open { transform: none; }
   .main-nav a { font-size: 1.15rem; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,.08); }
@@ -448,3 +455,12 @@ p { margin: 0 0 1em; }
 }
 .moments figure { aspect-ratio: auto; height: 300px; }
 @media (max-width: 640px) { .moments figure { height: 240px; } }
+
+/* hero ghost button is a <button> now */
+button.btn-ghost { font-family: var(--sans); }
+
+/* long button labels must wrap instead of widening the page on small phones */
+.contact-inner > *, .contact-form > * { min-width: 0; }
+@media (max-width: 640px) {
+  .form-actions .btn, .hero-actions .btn { white-space: normal; text-align: center; }
+}
